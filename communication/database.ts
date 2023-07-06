@@ -33,16 +33,6 @@ export class Database {
     }
   }
 
-  async getUserByAccessTokenOrThrow(
-    accessToken: string,
-  ): Promise<DatabaseUser> {
-    const user = await this.getUserByAccessToken(accessToken);
-    if (user == null) {
-      throw new Error("Could not find user with access token.");
-    }
-    return user;
-  }
-
   async getUserByName(
       userName: string,
   ): Promise<DatabaseUser | undefined> {
@@ -59,26 +49,6 @@ export class Database {
     return {
       userId: data[0].id,
       userName: data[0].username,
-    };
-  }
-
-  async getUserByAccessToken(
-    accessToken: string,
-  ): Promise<DatabaseUser | undefined> {
-    const { data, error } = await this.#client
-      .from("users")
-      .select("id,username,avatar_url")
-      .eq("access_token", accessToken);
-    if (error) {
-      throw new Error(error.message);
-    }
-    if (data.length === 0) {
-      return undefined;
-    }
-    return {
-      userId: data[0].id,
-      userName: data[0].username,
-      avatarUrl: data[0].avatar_url,
     };
   }
 
